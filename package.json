@@ -2,8 +2,9 @@
   "name": "forge-lab",
   "version": "1.0.0",
   "description": "Playground to learn and use Autodesk Forge platform and Node.js",
-  "main": "index.js",
+  "main": "start.js",
   "scripts": {
+    "start": "node start.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ahmad Khairat",

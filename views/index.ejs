@@ -5,6 +5,21 @@
   </head>
   <body>
     <h1><%= title %></h1>
-    <p><%= contents %></p>
+    <p id="contents"><%= contents %></p>
+
+    <a href="#" id="autodeskSignin">Signin to BIM 360</a>
+    <script>
+      let contents = document.getElementById("contents");
+      if (document.cookie.indexOf("forge-session=") >= 0)
+      contents.innerText="You are now signed in";
+
+      getSigninUrl();
+      async function getSigninUrl() {
+        let autodeskSignin = document.getElementById("autodeskSignin");
+        let res = await fetch("/oauth/url");
+        let url = await res.text();
+        autodeskSignin.href = url;
+      }
+    </script>
   </body>
 </html>

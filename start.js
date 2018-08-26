@@ -20,4 +20,8 @@ app.use(cookieSession({
 var indexRouter = require("./routes/index");
 app.use("/", indexRouter);
 
+// OAuth 3-legged route
+var authRouter = require("./routes/oauth");
+app.use("/oauth", authRouter);
+
 app.listen(3000);

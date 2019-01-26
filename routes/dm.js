@@ -44,13 +44,14 @@ router.get("/hub/:hub_id/project/:project_id/folder/:folder_id/items", async fun
   res.render("folders", { folders: items });
 });
 
-router.get("/hub/:hub_id/project/:project_id/item/:item_id/versions", async function (req, res) {
+router.get("/hub/:hub_id/project/:project_id/folder/:folder_id/item/:item_id/versions", async function (req, res) {
   let hubId = req.params.hub_id;
   let projectId = req.params.project_id;
+  let folderId = req.params.folder_id;
   let itemId = req.params.item_id;
 
   const dm = new ForgeDataManagement(req.session);
-  let versions = await dm.getVersions(hubId, projectId, itemId);
+  let versions = await dm.getVersions(hubId, projectId, folderId, itemId);
 
   console.log(versions);
   res.render("versions", { versions: versions });
@@ -58,9 +59,10 @@ router.get("/hub/:hub_id/project/:project_id/item/:item_id/versions", async func
 
 router.get("/version/:version_urn/view", async function (req, res) {
   let versionUrn = req.params.version_urn;
+  let viewableId = req.query.viewable;
 
   const dm = new ForgeDataManagement(req.session);
-  let viewer_link = await dm.getViewerLink(versionUrn);
+  let viewer_link = await dm.getViewerLink(versionUrn, viewableId);
 
   console.log(viewer_link);
   res.redirect(viewer_link);

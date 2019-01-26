@@ -89,12 +89,15 @@ class ForgeDataManagement {
     }
   }
 
-  async getVersions(hubId, projectId, itemId) {
+  async getVersions(hubId, projectId, folderId, itemId) {
     try {
       let tokenInternal = await this._credentials.getTokenInternal();
 
       const itemsApi = new forgeSDK.ItemsApi();
       let data = await itemsApi.getItemVersions(projectId, itemId, {}, this._oauthClient, tokenInternal);
+
+      const foldersApi = new forgeSDK.FoldersApi();
+      let parentData = await foldersApi.getFolderContents(projectId, folderId, {}, this._oauthClient, tokenInternal);
 
       console.log(data.body.data);
       let versions = data.body.data.map(version => {
@@ -103,8 +106,9 @@ class ForgeDataManagement {
         // with additional processing after the lateral object is created 
         let newVersion = {
           version_id: version.id,
-          project_id: projectId,
           hub_id: hubId,
+          project_id: projectId,
+          folder_id: folderId,
           item_id: itemId,
           name: (version.attributes.displayName == null) ? version.attributes.name : version.attributes.displayName,
           version_number: version.attributes.versionNumber,
@@ -120,6 +124,7 @@ class ForgeDataManagement {
           last_modified_user_id: version.attributes.lastModifiedUserId,
           last_modified_user_name: version.attributes.lastModifiedUserName,
           viewer_urn: (typeof version.relationships.derivatives  != "undefined") ? version.relationships.derivatives.data.id : null, //Base64 encoded URN
+          viewer_viewable_id: (typeof version.attributes.extension.data  != "undefined") ? version.attributes.extension.data.viewableId : null, // viewableID
           ref_derivatives: (typeof version.relationships.derivatives != "undefined") ? version.relationships.derivatives.meta.link.href : null, //Manifest for derivatives
           ref_download_formats: (typeof version.relationships.downloadFormats != "undefined") ? version.relationships.downloadFormats.links.related.href : null, //Download format
           ref_thumbnails: (typeof version.relationships.thumbnails != "undefined") ? version.relationships.thumbnails.meta.link.href : null, //Thumbnail
@@ -130,6 +135,16 @@ class ForgeDataManagement {
         // Version name need additional processing 
         newVersion.name +=  " v" + newVersion.version_number.toString(); // or version.id.match(/^(.*)\?version=(\d+)$/)[2]
 
+        // Sheets from BIM360 Document from Plans folder
+        if (newVersion.file_type == "versions:autodesk.bim360:Document") {
+          let parentSourceItem = parentData.body.data.find(parentFolderItem => {
+            return (parentFolderItem.attributes.extension.data.sourceFileName == version.attributes.extension.data.sourceFileName);
+          });
+          // We have a match, get the parent Item urn as viewer_urn
+          let parentURN = parentSourceItem.relationships.tip.data.id;
+          newVersion.viewer_urn = this.encodeBase64Url(parentURN);
+        }
+
         return newVersion;
       });
       return versions;
@@ -139,11 +154,13 @@ class ForgeDataManagement {
     }
   }
 
-  async getViewerLink(versionUrn, internalToken = false) {
+  async getViewerLink(versionUrn, viewableId = "", internalToken = false) {
     try {
       let token = (internalToken) ? await this._credentials.getTokenInternal() : await this._credentials.getTokenPublic();
 
       let url = "/viewer.html?token=" + token.access_token + "&urn=" + versionUrn;
+      if (viewableId != "")
+        url += "&viewable=" + viewableId;
   
       console.log(url);
       return url;
@@ -151,6 +168,10 @@ class ForgeDataManagement {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  encodeBase64Url(str) {
+    return Buffer.from(str, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
   }
 }
 

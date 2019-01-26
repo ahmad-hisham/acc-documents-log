@@ -70,8 +70,22 @@
       // However, when using a ViewingApplication, we have access to the **bubble** attribute,
       // which references the root node of a graph that wraps each object from the Manifest JSON.
 
-      // Choose first avialble viewable
-      viewerApp.selectItem(viewables[0].data, onItemLoadSuccess, onItemLoadFail);
+      var viewables = viewerApp.bubble.search({ 'type': 'geometry' });
+      if (viewables.length === 0) {
+        console.error('Document contains no viewables.');
+        return;
+      }
+
+      var viewableId = getParameterByName('viewable');
+      if (viewableId != null) {
+        viewables.forEach(function (viewable) {
+          if (viewable.data.viewableID == viewableId)
+            viewerApp.selectItem(viewable.data, onItemLoadSuccess, onItemLoadFail);
+        });
+      }
+      else
+        // Choose first avialble viewable
+        viewerApp.selectItem(viewables[0].data, onItemLoadSuccess, onItemLoadFail);
     }
 
     function onDocumentLoadFailure(viewerErrorCode) {

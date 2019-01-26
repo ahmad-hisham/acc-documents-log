@@ -15,9 +15,13 @@
     <% for (let version of versions) { %>
       <tr>
         <td>
-          <% if (version.viewer_urn != null) { %>
+          <% if (version.viewer_urn != null && version.viewer_viewable_id == null) { %>
             <!-- Viewable file -->
             <a href="/dm/version/<%= version.viewer_urn %>/view"><%= version.name %></a>
+          <%# } else if (version.file_type == "versions:autodesk.bim360:Document") { %>
+          <% } else if (version.viewer_urn != null && (version.viewer_viewable_id != null)) { %>
+            <!-- BIM 360 Plans document -->
+            <a href="/dm/version/<%= version.viewer_urn %>/view?viewable=<%= version.viewer_viewable_id %>"><%= version.name %></a>
           <% } else { %>
             <!-- Unviewable file (No viewer Urn)-->
             <a href="#"><%= version.name %></a>
@@ -27,6 +31,7 @@
           version_id:           <%= version.version_id %> <br />
           hub_id:               <%= version.hub_id %> <br />
           project_id:           <%= version.project_id %> <br />
+          folder_id:            <%= version.folder_id %> <br />
           item_id:              <%= version.item_id %> <br />
           version_number:       <%= version.version_number %> <br />
           type:                 <%= version.type %> <br />
@@ -41,6 +46,7 @@
           last_modified_user:   <%= version.last_modified_user_name %>
                                 (<%= version.last_modified_user_id %>)<br />
           viewer_urn:           <%= version.viewer_urn %> <br />
+          viewer_viewable_id:   <%= version.viewer_viewable_id %> <br />
           ref_derivatives:      <%= version.ref_derivatives %> <br />
           ref_download_formats: <%= version.ref_download_formats %> <br />
           ref_thumbnails:       <%= version.ref_thumbnails %> <br />

@@ -26,7 +26,7 @@
             <a href="/dm/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/folder/<%= folder.folder_id %>/items"><%= folder.name %></a>
           <%# } else if (["items:autodesk.core:File", "items:autodesk.bim360:File"].includes(folder.folder_type)) { %>
           <% } else { %>
-            <a href="/dm/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/item/<%= folder.folder_id %>/versions"><%= folder.name %></a>
+            <a href="/dm/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/folder/<%= folder.parent_id %>/item/<%= folder.folder_id %>/versions"><%= folder.name %></a>
           <% }%>
         </td>
         <td>

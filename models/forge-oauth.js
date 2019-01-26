@@ -1,5 +1,5 @@
-let forgeSDK = require("forge-apis");
-let config = require("../config/config");
+const forgeSDK = require("forge-apis");
+const config = require("../config/config");
 
 class OAuth {
   constructor(session) {
@@ -18,8 +18,8 @@ class OAuth {
     return { access_token: this._session.tokenInternal, expires_in: this.getExpiresIn() };
   }
   getExpiresIn() {
-    var now = new Date();
-    var expiresAt = new Date(this._session.expiresAt);
+    const now = new Date();
+    const expiresAt = new Date(this._session.expiresAt);
     return Math.round((expiresAt.getTime() - now.getTime()) / 1000);
   }
   isExpired() {
@@ -41,8 +41,8 @@ class OAuth {
 
   // Refresh both internal and public tokens, keep new refresh token
   async refreshToken() {
-    var forgeOAuthInternal = this.OAuthClient(config.scopes.internal);
-    var forgeOAuthPublic = this.OAuthClient(config.scopes.public);
+    let forgeOAuthInternal = this.OAuthClient(config.scopes.internal);
+    let forgeOAuthPublic = this.OAuthClient(config.scopes.public);
     let credentialsInternal = await forgeOAuthInternal.refreshToken({ refresh_token: this._session.refreshToken });
     let credentialsPublic = await forgeOAuthPublic.refreshToken(credentialsInternal);
 
@@ -54,15 +54,15 @@ class OAuth {
     this._session.tokenInternal = credentialsInternal.access_token;
     this._session.tokenPublic = credentialsPublic.access_token;
     this._session.refreshToken = credentialsPublic.refresh_token;
-    var now = new Date();
+    const now = new Date();
     this._session.expiresAt = (now.setSeconds(now.getSeconds() + credentialsPublic.expires_in));
   }
 
   OAuthClient() {
-    var client_id = config.credentials.client_id;
-    var client_secret = config.credentials.client_secret;
-    var callback_url = config.credentials.callback_url;
-    var scopes = config.scopes.internal;
+    let client_id = config.credentials.client_id;
+    let client_secret = config.credentials.client_secret;
+    let callback_url = config.credentials.callback_url;
+    let scopes = config.scopes.internal;
 
     return new forgeSDK.AuthClientThreeLegged(client_id, client_secret, callback_url, scopes);
   }

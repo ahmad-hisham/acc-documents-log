@@ -1,7 +1,7 @@
 const forgeSDK = require("forge-apis");
 const config = require("../config/config");
 
-class OAuth {
+class ForgeOAuth {
   constructor(session) {
     this._session = session;
   }
@@ -68,4 +68,4 @@ class OAuth {
   }
 }
 
-module.exports = OAuth;
+module.exports = ForgeOAuth;

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Hubs</title>
+</head>
+
+<body>
+  <h1>Hubs</h1>
+  <table>
+    <tr>
+      <th>Hub</th>
+      <th>Type</th>
+    </tr>
+    <% for (let hub of hubs) { %>
+      <tr>
+        <td>
+          <a href="/dm/hub/<%= hub.hub_id %>/projects"><%= hub.name %></a>
+        </td>
+        <td>
+          <%= hub.type %>
+        </td>
+      </tr>
+      <% }%>
+  </table>
+</body>
+
+</html>

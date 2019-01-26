@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Folders</title>
+</head>
+
+<body>
+  <h1>Folder</h1>
+  <table>
+    <tr>
+      <th>Folder</th>
+      <th>Type</th>
+      <th>Create Time</th>
+      <th>Create User</th>
+      <th>Last Modified Time</th>
+      <th>Last Modified User</th>
+      <th>Hidden</th>
+      <th>Count</th>
+    </tr>
+    <% for (let folder of folders) { %>
+      <tr>
+        <td>
+          <%# if (["folders:autodesk.core:Folder", "folders:autodesk.bim360:Folder"].includes(folder.folder_type)) { %>
+          <% if (folder.type == "folders") { %>
+            <a href="/dm/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/folder/<%= folder.folder_id %>/items"><%= folder.name %></a>
+          <%# } else if (["items:autodesk.core:File", "items:autodesk.bim360:File"].includes(folder.folder_type)) { %>
+          <% } else { %>
+            <a href="/dm/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/item/<%= folder.folder_id %>/versions"><%= folder.name %></a>
+          <% }%>
+        </td>
+        <td>
+          <%= folder.type %>
+        </td>
+        <td>
+          <%= folder.create_time %>
+        </td>
+        <td>
+          <%= folder.create_user_name %> (<%= folder.create_user_id %>)
+        </td>
+        <td>
+          <%= folder.last_modified_time %>
+        </td>
+        <td>
+          <%= folder.last_modified_user_name %> (<%= folder.last_modified_user_id %>)
+        </td>
+        <td>
+          <%= folder.hidden %>
+        </td>
+        <td>
+          <%= folder.object_count %>
+        </td>
+      </tr>
+    <% }%>
+  </table>
+</body>
+</html>

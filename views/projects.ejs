@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Projects</title>
+</head>
+
+<body>
+  <h1>Projects</h1>
+  <table>
+    <tr>
+      <th>Project</th>
+      <th>Type</th>
+    </tr>
+    <% for (let project of projects) { %>
+      <tr>
+        <td>
+          <a href="/dm/hub/<%= project.hub_id %>/project/<%= project.project_id %>/folders"><%= project.name %></a>
+        </td>
+        <td>
+          <%= project.type %>
+        </td>
+      </tr>
+      <% }%>
+  </table>
+</body>
+
+</html>

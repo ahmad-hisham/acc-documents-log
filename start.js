@@ -27,4 +27,8 @@ app.use("/", indexRouter);
 const authRouter = require("./routes/oauth");
 app.use("/oauth", authRouter);
 
+// Data Management route
+const dmRouter = require("./routes/dm");
+app.use("/dm", dmRouter);
+
 app.listen(3000);

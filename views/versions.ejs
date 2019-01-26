@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Item Versions</title>
+</head>
+
+<body>
+  <h1>Item Versions</h1>
+  <table>
+    <tr>
+      <th>Version</th>
+      <th>Info</th>
+    </tr>
+    <% for (let version of versions) { %>
+      <tr>
+        <td>
+          <% if (version.viewer_urn != null) { %>
+            <!-- Viewable file -->
+            <a href="/dm/version/<%= version.viewer_urn %>/view"><%= version.name %></a>
+          <% } else { %>
+            <!-- Unviewable file (No viewer Urn)-->
+            <a href="#"><%= version.name %></a>
+          <% }%>
+        </td>
+        <td>
+          version_id:           <%= version.version_id %> <br />
+          hub_id:               <%= version.hub_id %> <br />
+          project_id:           <%= version.project_id %> <br />
+          item_id:              <%= version.item_id %> <br />
+          version_number:       <%= version.version_number %> <br />
+          type:                 <%= version.type %> <br />
+          file_type:            <%= version.file_type %> <br />
+          file_extension:       <%= version.file_extension %> <br />
+          mime_type:            <%= version.mime_type %> <br />
+          size:                 <%= version.size %> <br />
+          create_time:          <%= version.create_time %> <br />
+          create_user:          <%= version.create_user_name %> 
+                                (<%= version.create_user_id %>)<br />
+          last_modified_time:   <%= version.last_modified_time %> <br />
+          last_modified_user:   <%= version.last_modified_user_name %>
+                                (<%= version.last_modified_user_id %>)<br />
+          viewer_urn:           <%= version.viewer_urn %> <br />
+          ref_derivatives:      <%= version.ref_derivatives %> <br />
+          ref_download_formats: <%= version.ref_download_formats %> <br />
+          ref_thumbnails:       <%= version.ref_thumbnails %> <br />
+          ref_item:             <%= version.ref_item %> <br />
+          ref_storage:          <%= version.ref_storage %> <br />
+        </td>
+      </tr>
+      <% }%>
+  </table>
+</body>
+
+</html>

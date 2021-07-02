@@ -1,7 +1,7 @@
 {
-  "name": "forge-lab",
+  "name": "acc-documents-log",
   "version": "1.0.0",
-  "description": "Playground to learn and use Autodesk Forge platform and Node.js",
+  "description": "Utility to export documents log for a complete Hub",
   "main": "start.js",
   "scripts": {
     "start": "node start.js",

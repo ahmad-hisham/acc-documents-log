@@ -20,6 +20,9 @@
         <td>
           <%= project.type %>
         </td>
+        <td>
+          <a href="/export/hub/<%= project.hub_id %>/project/<%= project.project_id %>">Export</a>
+        </td>
       </tr>
       <% }%>
   </table>

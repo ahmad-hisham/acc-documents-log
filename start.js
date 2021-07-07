@@ -31,4 +31,8 @@ app.use("/oauth", authRouter);
 const dmRouter = require("./routes/dm");
 app.use("/dm", dmRouter);
 
+// Export route
+const exportRouter = require("./routes/export");
+app.use("/export", exportRouter);
+
 app.listen(3000);

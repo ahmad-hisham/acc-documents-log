@@ -110,7 +110,7 @@ class ForgeDataManagement {
           project_id: projectId,
           folder_id: folderId,
           item_id: itemId,
-          name: (version.attributes.displayName == null) ? version.attributes.name : version.attributes.displayName,
+          name: (version.attributes.displayName) ? version.attributes.displayName : version.attributes.name,
           version_number: version.attributes.versionNumber,
           type: version.type,
           file_type: version.attributes.extension.type,
@@ -123,13 +123,14 @@ class ForgeDataManagement {
           last_modified_time: version.attributes.lastModifiedTime,
           last_modified_user_id: version.attributes.lastModifiedUserId,
           last_modified_user_name: version.attributes.lastModifiedUserName,
-          viewer_urn: (typeof version.relationships.derivatives  != "undefined") ? version.relationships.derivatives.data.id : null, //Base64 encoded URN
-          viewer_viewable_id: (typeof version.attributes.extension.data  != "undefined") ? version.attributes.extension.data.viewableId : null, // viewableID
-          ref_derivatives: (typeof version.relationships.derivatives != "undefined") ? version.relationships.derivatives.meta.link.href : null, //Manifest for derivatives
-          ref_download_formats: (typeof version.relationships.downloadFormats != "undefined") ? version.relationships.downloadFormats.links.related.href : null, //Download format
-          ref_thumbnails: (typeof version.relationships.thumbnails != "undefined") ? version.relationships.thumbnails.meta.link.href : null, //Thumbnail
-          ref_item: (typeof version.relationships.item != "undefined") ? version.relationships.item.data.id : null, //Item lineage
-          ref_storage: (typeof version.relationships.storage != "undefined") ? version.relationships.storage.data.id : null //source file
+          viewer_urn: (version.relationships.derivatives) ? version.relationships.derivatives.data.id : null, //Base64 encoded URN
+          viewer_viewable_id: (version.attributes.extension.data) ? version.attributes.extension.data.viewableId : null, // viewableID
+          ref_derivatives: (version.relationships.derivatives) ? version.relationships.derivatives.meta.link.href : null, //Manifest for derivatives
+          ref_download_formats: (version.relationships.downloadFormats) ? version.relationships.downloadFormats.links.related.href : null, //Download format
+          ref_thumbnails: (version.relationships.thumbnails) ? version.relationships.thumbnails.meta.link.href : null, //Thumbnail
+          ref_item: (version.relationships.item) ? version.relationships.item.data.id : null, //Item lineage
+          ref_storage: (version.relationships.storage) ? version.relationships.storage.data.id : null, //source file
+          web_view: (version.links.webView) ? version.links.webView.href : null //BIM 360 Link
         };
 
         // Version name need additional processing 
@@ -147,6 +148,44 @@ class ForgeDataManagement {
 
         return newVersion;
       });
+      return versions;
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getVersionsForExport(hubId, projectId, folderId, itemId, fullPath) {
+    try {
+      let tokenInternal = await this._credentials.getTokenInternal();
+
+      const itemsApi = new forgeSDK.ItemsApi();
+      let data = await itemsApi.getItemVersions(projectId, itemId, {}, this._oauthClient, tokenInternal);
+
+      console.log(data.body.data);
+      let versions = data.body.data.map(version => (
+        {
+          version_id: version.id,
+          hub_id: hubId,
+          project_id: projectId,
+          folder_id: folderId,
+          item_id: itemId,
+          name: (version.attributes.displayName) ? version.attributes.displayName : version.attributes.name,
+          version_number: version.attributes.versionNumber,
+          type: version.type,
+          file_type: version.attributes.extension.type,
+          file_extension: version.attributes.fileType,
+          size: version.attributes.storageSize,
+          create_time: version.attributes.createTime, // new Date(version.attributes.createTime).toLocaleString(),
+          create_user_id: version.attributes.createUserId,
+          create_user_name: version.attributes.createUserName,
+          last_modified_time: version.attributes.lastModifiedTime,
+          last_modified_user_id: version.attributes.lastModifiedUserId,
+          last_modified_user_name: version.attributes.lastModifiedUserName,
+          web_view: (version.links.webView) ? version.links.webView.href : null, //source file
+          full_path: fullPath
+        }
+      ));
       return versions;
 
     } catch (error) {

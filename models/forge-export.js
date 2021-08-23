@@ -13,10 +13,10 @@ class ForgeExport {
 
         // Set Headers
         this.exportHeaders = [
-            "item urn", "project id", "hub id", "parent folder id",
-            "href", "file name", "type", "item type", "create time",
-            "create user id", "create user name", "hidden", "last modified time",
-            "last modified user id", "last modified user name", " ", "full path"
+            "version_id", "hub_id", "project_id", "folder_id", "item_id", "name",
+            "version_number", "type", "file_type"," file_extension", "size", "create_time",
+            "create_user_id", "create_user_name", "last_modified_time", "last_modified_user_id",
+            "last_modified_user_name", "web_view", "full_path"
         ];
     }
     
@@ -62,10 +62,6 @@ class ForgeExport {
         const fileName = `download/export-hub_${hubId}_${projectId}_${timeStamp}.csv`;
         console.log(fileName);
 
-        // Open file and write headers
-        let csvHeaders = Papa.unparse([this.exportHeaders], {header: false});
-        await fs.writeFile(fileName, "\ufeff" + csvHeaders + "\r\n", {encoding: "utf8"});
-
         const dm = new ForgeDataManagement(this._session);
 
         // Reading the root of a project is a special case:
@@ -75,10 +71,10 @@ class ForgeExport {
         let allItems = await this.getAllItemsInFolder(dm, hubId, projectId, "", "", []);
 
         // Convert objects data to CSV string
-        let csvString = Papa.unparse(allItems, {header: false});
+        let csvString = Papa.unparse(allItems, {header: true});
 
         // Write all data read from all folders
-        await fs.appendFile(fileName, csvString + "\r\n");
+        await fs.writeFile(fileName, "\ufeff" + csvString + "\r\n", {encoding: "utf8"});
 
         return fileName;
     }
@@ -94,7 +90,9 @@ class ForgeExport {
                 arrayOfItems = await this.getAllItemsInFolder(forgeDM, hubId, projectId, item.folder_id, fullPath + "/" + item.name, arrayOfItems);
             } else {
                 item.full_path = fullPath;
-                arrayOfItems.push(item)
+                // Get all versions of an item
+                const versions = await forgeDM.getVersionsForExport(hubId, projectId, folderId, item.folder_id, item.full_path);
+                arrayOfItems.push(...versions)
             }
         }
 

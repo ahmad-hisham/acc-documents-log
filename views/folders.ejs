@@ -17,6 +17,7 @@
       <th>Last Modified User</th>
       <th>Hidden</th>
       <th>Count</th>
+      <th></th>
     </tr>
     <% for (let folder of folders) { %>
       <tr>
@@ -49,6 +50,11 @@
         </td>
         <td>
           <%= folder.object_count %>
+        </td>
+        <td>
+          <% if (folder.type == "folders") { %>
+            <a href="/export/hub/<%= folder.hub_id %>/project/<%= folder.project_id %>/folder/<%= folder.folder_id %>" target="_blank">Export</a>
+          <% } %>
         </td>
       </tr>
     <% }%>

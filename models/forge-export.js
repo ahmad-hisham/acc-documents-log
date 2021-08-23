@@ -79,6 +79,27 @@ class ForgeExport {
         return fileName;
     }
 
+    async exportFolder(hubId, projectId, folderId) {
+        // Set filename
+        const timeStamp = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '').replaceAll(':', '');
+        const fileName = `download/export-hub_${hubId}_${projectId}_${folderId}_${timeStamp}.csv`;
+        console.log(fileName);
+
+        const dm = new ForgeDataManagement(this._session);
+
+        // Reading the folder items
+        // ToDo: get fullPath first
+        let allItems = await this.getAllItemsInFolder(dm, hubId, projectId, folderId, "", []);
+
+        // Convert objects data to CSV string
+        let csvString = Papa.unparse(allItems, {header: true});
+
+        // Write all data read from all folders
+        await fs.writeFile(fileName, "\ufeff" + csvString + "\r\n", {encoding: "utf8"});
+
+        return fileName;
+    }
+
     async getAllItemsInFolder(forgeDM, hubId, projectId, folderId, fullPath, arrayOfItems) {
         // Read folder items
         let items = await forgeDM.getFolders(hubId, projectId, folderId);

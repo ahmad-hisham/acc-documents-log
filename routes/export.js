@@ -24,4 +24,16 @@ router.get("/hub/:hub_id/project/:project_id", async function (req, res) {
     res.download(fileName);
   });
 
+  router.get("/hub/:hub_id/project/:project_id/folder/:folder_id", async function (req, res) {
+    let hubId = req.params.hub_id;
+    let projectId = req.params.project_id;
+    let folderId = req.params.folder_id;
+
+    const forgeExport = new ForgeExport(req.session);
+    let fileName = await forgeExport.exportFolder(hubId, projectId, folderId);
+
+    // Send file as response
+    res.download(fileName);
+  });
+
 module.exports = router;

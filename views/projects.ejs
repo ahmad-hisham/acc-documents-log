@@ -11,6 +11,7 @@
     <tr>
       <th>Project</th>
       <th>Type</th>
+      <th></th>
     </tr>
     <% for (let project of projects) { %>
       <tr>
@@ -21,7 +22,7 @@
           <%= project.type %>
         </td>
         <td>
-          <a href="/export/hub/<%= project.hub_id %>/project/<%= project.project_id %>">Export</a>
+          <a href="/export/hub/<%= project.hub_id %>/project/<%= project.project_id %>" target="_blank">Export</a>
         </td>
       </tr>
       <% }%>

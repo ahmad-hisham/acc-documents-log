@@ -18,7 +18,7 @@ class ForgeExport {
             "create user id", "create user name", "hidden", "last modified time",
             "last modified user id", "last modified user name", " ", "full path"
         ];
-      }
+    }
     
     async exportHub(hubId) {
         // Set filename
@@ -84,11 +84,9 @@ class ForgeExport {
     }
 
     async getAllItemsInFolder(forgeDM, hubId, projectId, folderId, fullPath, arrayOfItems) {
-        //console.log(arrayOfItems);
-    
         // Read folder items
         let items = await forgeDM.getFolders(hubId, projectId, folderId);
-    
+
         // Iterate over items and go inside folders
         for (const item of items) {
             if (item.type == "folders") {
@@ -99,7 +97,7 @@ class ForgeExport {
                 arrayOfItems.push(item)
             }
         }
-    
+
         return arrayOfItems;
     }
 }
